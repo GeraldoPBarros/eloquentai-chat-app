@@ -3,11 +3,18 @@
 import { createContext, useContext, useState } from "react";
 import { useActions, useUIState } from "ai/rsc";
 
-import { HistoryContextTypes, MessageType } from "../../types/history";
+import {
+  ChatStatusType,
+  HistoryContextTypes,
+  MessageType,
+} from "../../types/history";
 import { nanoid } from "nanoid";
 import { ClientMessage } from "../generate-text/action";
 
 const HistoryContext = createContext<HistoryContextTypes>({
+  chatStatus: "closed",
+  isOffline: false,
+  handleChatStatus: () => {},
   messageHistory: null,
   handleUserInputMessage: () => {},
 });
@@ -15,12 +22,15 @@ const HistoryContext = createContext<HistoryContextTypes>({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const HistoryProvider = ({ children }: any) => {
   const [messageHistory, setMessageHistory] = useState<MessageType[]>([]);
+  const [chatStatus, setChatStatus] = useState<ChatStatusType>("closed");
+  const [isOffline, setIsOffline] = useState<boolean>(true);
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
 
+
   const handleUserInputMessage = async (message: MessageType) => {
     setMessageHistory([...messageHistory, message]);
-    
+
     setConversation((currentConversation: ClientMessage[]) => [
       ...currentConversation,
       { id: nanoid(), role: "user", display: message.message },
@@ -34,9 +44,16 @@ export const HistoryProvider = ({ children }: any) => {
     ]);
   };
 
+  const handleChatStatus = (status: ChatStatusType) => {
+    setChatStatus(status);
+  };
+
   return (
     <HistoryContext.Provider
       value={{
+        chatStatus,
+        isOffline,
+        handleChatStatus,
         messageHistory,
         handleUserInputMessage,
       }}

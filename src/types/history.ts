@@ -3,7 +3,12 @@ export interface MessageType {
   message: string;
 }
 
+export type ChatStatusType = "open" | "closed";
+
 export interface HistoryContextTypes {
+  chatStatus: "open" | "closed";
+  isOffline: boolean;
+  handleChatStatus: (status: ChatStatusType) => void;
   messageHistory: MessageType[] | null;
   handleUserInputMessage: (message: MessageType) => void;
 }
