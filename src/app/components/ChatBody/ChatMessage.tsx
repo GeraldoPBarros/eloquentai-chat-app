@@ -1,14 +1,15 @@
+import { ReactNode } from "react";
 import Logo from "../../assets/eloquentai-logo.png";
 
 interface ChatMessageProps {
-  isMessageFromUser: boolean;
-  message: string;
+  role: "user" | "assistant";
+  message: ReactNode;
 }
 
-export function ChatMessage({ isMessageFromUser, message }: ChatMessageProps) {
+export function ChatMessage({ role, message }: ChatMessageProps) {
   return (
     <div className="flex w-full h-auto">
-      {isMessageFromUser ? (
+      {role === "user" ? (
         <div className="flex w-full justify-end">
           <div className="flex bg-purple-900 text-white w-3/4 p-2 rounded-[5px] mt-4">{message}</div>
         </div>

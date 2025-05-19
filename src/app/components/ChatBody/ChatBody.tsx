@@ -1,22 +1,21 @@
-"use client"
+"use client";
 
 import { ChatBodyIntro } from "./ChatBodyIntro";
 import { ChatMessage } from "./ChatMessage";
 
-import { useHistory } from "../../hooks/useHistory";
+import { useUIState } from "ai/rsc";
+import { ClientMessage } from "../../generate-text/action";
 
 export function ChatBody() {
-  const { messageHistory } = useHistory();
+  const [conversation, setConversation] = useUIState();
 
   return (
     <div className="w-full p-4 h-[350px] overflow-y-auto">
       <ChatBodyIntro />
-      {messageHistory?.map((history, index) => (
-        <ChatMessage
-          key={index}
-          isMessageFromUser={history.isUserMessage}
-          message={history.message}
-        />
+      {conversation.map((message: ClientMessage) => (
+        <div key={message.id}>
+          <ChatMessage role={message.role} message={message.display} />
+        </div>
       ))}
     </div>
   );

@@ -19,9 +19,10 @@ export function ChatFooter() {
       }
 
       handleUserInputMessage({
-        isUserMessage: true,
+        role: "user",
         message: userMessage,
       });
+      
       inputRef.current.value = "";
     }
   };

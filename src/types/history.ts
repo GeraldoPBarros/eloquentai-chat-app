@@ -1,5 +1,5 @@
 export interface MessageType {
-  isUserMessage: boolean;
+  role: "user" | "assistant";
   message: string;
 }
 
