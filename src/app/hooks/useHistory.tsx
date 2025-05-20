@@ -14,6 +14,8 @@ import { ClientMessage } from "../generate-text/action";
 const HistoryContext = createContext<HistoryContextTypes>({
   chatStatus: "closed",
   isOffline: false,
+  isMaintananceMode: true,
+  handleMaintananceMode: () => {},
   handleChatStatus: () => {},
   messageHistory: null,
   handleUserInputMessage: () => {},
@@ -23,9 +25,10 @@ const HistoryContext = createContext<HistoryContextTypes>({
 export const HistoryProvider = ({ children }: any) => {
   const [messageHistory, setMessageHistory] = useState<MessageType[]>([]);
   const [chatStatus, setChatStatus] = useState<ChatStatusType>("closed");
-  const [isOffline, setIsOffline] = useState<boolean>(true);
+  const [isOffline, setIsOffline] = useState<boolean>(false);
   const [conversation, setConversation] = useUIState();
   const { continueConversation } = useActions();
+  const [isMaintananceMode, setIsMaintananceMode] = useState<boolean>(false);
 
 
   const handleUserInputMessage = async (message: MessageType) => {
@@ -48,10 +51,16 @@ export const HistoryProvider = ({ children }: any) => {
     setChatStatus(status);
   };
 
+  const handleMaintananceMode = (status: boolean) => {
+    setIsMaintananceMode(status);
+  }
+
   return (
     <HistoryContext.Provider
       value={{
         chatStatus,
+        isMaintananceMode,
+        handleMaintananceMode,
         isOffline,
         handleChatStatus,
         messageHistory,
@@ -66,7 +75,7 @@ export const HistoryProvider = ({ children }: any) => {
 export const useHistory = () => {
   const context = useContext(HistoryContext);
   if (!context) {
-    throw new Error("usePortfolio should be used inside of an AuthProvider");
+    throw new Error("useHistory should be used inside of an AuthProvider");
   }
   return context;
 };
